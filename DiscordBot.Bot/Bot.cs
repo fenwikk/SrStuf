@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-using DiscordBot.Commands;
+using DiscordBot.Bot.Commands;
 
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -11,7 +11,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 
-namespace DiscordBot
+namespace DiscordBot.Bot
 {
     public class Bot
     {
@@ -23,15 +23,36 @@ namespace DiscordBot
 
         public static string configFile = "config.json";
         
-        public async Task RunAsync()
+        public Bot(IServiceProvider services)
         {
+            ConfigBot(services);
+
             Console.Clear();
             Program.WriteTitle();
 
             var activity = new DiscordActivity("you sleep", ActivityType.Watching);
-            await Client.ConnectAsync(activity);
-            
-            await Task.Delay(-1);
+            Client.ConnectAsync(activity);
+        }
+        
+        public void ConfigBot(IServiceProvider services)
+        {
+            Console.Clear();
+            Program.WriteTitle();
+
+            Console.WriteLine("Configuring Bot...");
+            Console.WriteLine("[1/4] Getting configuration");
+
+            GetConfig();
+
+            Console.WriteLine("[2/4] Creating and setting up client");
+
+            CreateSetupClient(services);
+
+            Console.WriteLine("[3/4] Registering commands");
+
+            RegisterCommands();
+
+            Console.WriteLine("Bot Loaded!");
         }
 
         public void GetConfig()
@@ -55,7 +76,7 @@ namespace DiscordBot
             }
         }
 
-        public void CreateSetupClient()
+        public void CreateSetupClient(IServiceProvider services)
         {
             var config = new DiscordConfiguration
             {
@@ -70,7 +91,8 @@ namespace DiscordBot
             {
                 PrefixResolver = ResolvePrefixAsync,
                 EnableMentionPrefix = true,
-                EnableDms = false
+                EnableDms = false,
+                Services = services
             };
 
             var interactivityConfig = new InteractivityConfiguration()

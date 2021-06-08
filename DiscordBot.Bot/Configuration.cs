@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace DiscordBot
+namespace DiscordBot.Bot
 {
     [Serializable]
     public class Configuration
