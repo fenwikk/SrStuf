@@ -119,8 +119,8 @@ namespace DiscordBot.Bot
         public static Task<int> ResolvePrefixAsync(DiscordMessage msg)
         {
             string prefix = Config.GetPrefix(msg.Channel.GuildId);
-            
-            return Task.FromResult(msg.GetStringPrefixLength(prefix));
+
+            return Task.FromResult(msg.GetStringPrefixLength(prefix, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
