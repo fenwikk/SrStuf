@@ -11,10 +11,10 @@ namespace DiscordBot.Bot
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DbContext>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
             {
                 options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=DatabaseContext;Trusted_Connection=True;MultipleActiveResultSets=true",
-                    x => x.MigrationsAssembly("DiscordBot.DAL.Migrations"));
+                    x => x.MigrationsAssembly("DAL.Migrations"));
             });
             var serviceProvider = services.BuildServiceProvider();
             

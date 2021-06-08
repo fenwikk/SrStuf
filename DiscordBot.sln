@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBot", "DiscordBot.Bot\DiscordBot.csproj", "{81FCAF3E-36E3-4E49-8BCA-1A66715DED2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordBot", "DiscordBot.Bot\DiscordBot.csproj", "{81FCAF3E-36E3-4E49-8BCA-1A66715DED2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DiscordBot.DAL\DAL.csproj", "{2AE3C2BF-CE6C-49BA-9F26-DC928B863B34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DiscordBot.DAL\DAL.csproj", "{2AE3C2BF-CE6C-49BA-9F26-DC928B863B34}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.Migrations", "DiscordBot.DAL.Migrations\DAL.Migrations.csproj", "{BDB2D20F-AC51-4123-B242-57204F346634}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{81FCAF3E-36E3-4E49-8BCA-1A66715DED2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,5 +43,23 @@ Global
 		{2AE3C2BF-CE6C-49BA-9F26-DC928B863B34}.Release|x64.Build.0 = Release|Any CPU
 		{2AE3C2BF-CE6C-49BA-9F26-DC928B863B34}.Release|x86.ActiveCfg = Release|Any CPU
 		{2AE3C2BF-CE6C-49BA-9F26-DC928B863B34}.Release|x86.Build.0 = Release|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Debug|x64.Build.0 = Debug|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Debug|x86.Build.0 = Debug|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Release|x64.ActiveCfg = Release|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Release|x64.Build.0 = Release|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Release|x86.ActiveCfg = Release|Any CPU
+		{BDB2D20F-AC51-4123-B242-57204F346634}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0456E160-D385-4D7B-BF4B-68DA657D4041}
 	EndGlobalSection
 EndGlobal
