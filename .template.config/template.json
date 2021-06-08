@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Filip Mårtensson",
+    "classifications": [ "Discord", "Discord Bot", "DiscordBot" ],
+    "identity": "DSharpPlusBot",
+    "name": "DSharpPlus Discord Bot Template",
+    "shortName": "discordbot",
+    "tags": {
+      "language": "C#",
+      "type": "project"
+    }
+}
