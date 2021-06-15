@@ -25,7 +25,6 @@ namespace DiscordBot
         
         public async Task RunAsync()
         {
-            Console.Clear();
             Program.WriteTitle();
 
             var activity = new DiscordActivity("you sleep", ActivityType.Watching);

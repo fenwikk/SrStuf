@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 
-namespace DiscordBot.Bot.Commands
+namespace DiscordBot.Commands
 {
     public class FunCommands : BaseCommandModule
     {

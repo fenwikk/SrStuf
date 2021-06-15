@@ -1,22 +1,33 @@
 ﻿using System;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Hosting;
 
-namespace DiscordBot.Bot
+namespace DiscordBot
 {
     public class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            var bot = new Bot();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            Console.Clear();
+            WriteTitle();
+
+            Console.WriteLine("Loading Bot...");
+            Console.WriteLine("[1/4] Getting configuration");
+
+            bot.GetConfig();
+
+            Console.WriteLine("[2/4] Creating and setting up client");
+
+            bot.CreateSetupClient();
+
+            Console.WriteLine("[3/4] Registering commands");
+
+            bot.RegisterCommands();
+
+            Console.WriteLine("Bot Loaded!");
+            
+            bot.RunAsync().GetAwaiter().GetResult();
+        }
 
         public static void WriteTitle()
         {
