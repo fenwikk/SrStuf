@@ -31,10 +31,11 @@ namespace DiscordBot
 
         public static void WriteTitle()
         {
-            Console.WriteLine(@"   _____ _ _     _        _____       _    _____     _     ");
-            Console.WriteLine(@"  |   __|_| |_ _|_|___   |     |___ _| |  | __  |___| |_   ");
-            Console.WriteLine(@"  |__   | | | | | | .'|  | | | | . | . |  | __ -| . |  _|  ");
-            Console.WriteLine(@"  |_____|_|_|\_/|_|__,|  |_|_|_|___|___|  |_____|___|_|    ");
+                                                       
+            Console.WriteLine(@"       ____  _                   _     _____     _         ");
+            Console.WriteLine(@"      |    \|_|___ ___ ___ ___ _| |   | __  |___| |_       ");
+            Console.WriteLine(@"      |  |  | |_ -|  _| . |  _| . |   | __ -| . |  _|      ");
+            Console.WriteLine(@"      |____/|_|___|___|___|_| |___|   |_____|___|_|        ");         
             Console.WriteLine("");
             Console.WriteLine(@"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             Console.WriteLine(@"---------------- 2021 (c) Filip Mårtensson ----------------");
