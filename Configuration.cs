@@ -9,22 +9,36 @@ namespace DiscordBot
     public class Configuration
     {
         public string Token { get; set; }
-        public List<Guild> Guilds { get; set; }
+        public ulong AuthorId { get; set; }
         public string DefaultPrefix { get; set; }
+        public List<Guild> Guilds { get; set; }
+        public string Description { get; set; }
 
         public void Setup(string configFileName)
         {
             if (Token == string.Empty || Token == null)
             {
-                Console.WriteLine("Token: ");
-                string token = Console.ReadLine(); 
-                Token = token;
+                Console.WriteLine("Token*: ");
+                Token = Console.ReadLine();
             }
             if (DefaultPrefix == string.Empty || DefaultPrefix == null)
             {
-                Console.WriteLine("\nDefault Prefix: ");
-                string defaultPrefix = Console.ReadLine();
-                DefaultPrefix = defaultPrefix;
+                Console.WriteLine("\nDefault Prefix*: ");
+                DefaultPrefix= Console.ReadLine();
+            }
+            if (AuthorId == 0)
+            {
+                Console.WriteLine("\nAuthor Id (default: 393368613652004877): ");
+                AuthorId = Convert.ToUInt64(Console.ReadLine());
+                if (AuthorId == 0)
+                    AuthorId = 393368613652004877;
+            }
+            if (Description == string.Empty || Description == null)
+            {
+                Console.WriteLine("\nBot Description: ");
+                Description = Console.ReadLine();
+                if (Description == string.Empty || Description == null)
+                    Description = "No description provided";
             }
 
             Guilds = new List<Guild>() { new Guild { id = 0, prefix = DefaultPrefix }};
@@ -47,6 +61,8 @@ namespace DiscordBot
             Token = config.Token;
             DefaultPrefix = config.DefaultPrefix;
             Guilds = config.Guilds;
+            AuthorId = config.AuthorId;
+            Description = config.Description;
         }
 
         public string GetPrefix(ulong? guildId)

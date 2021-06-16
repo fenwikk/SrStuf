@@ -40,12 +40,15 @@ namespace DiscordBot
             if (!File.Exists(configFile))
             {
                 Console.WriteLine("Configuration file not found! Creating file...");
-                Console.WriteLine("Please input your configuration:");
+                Console.WriteLine("Please input your configuration. Fields marked with a asterisk (*) are mandatory");
                 Config.Setup(configFile);
             }
 
             Console.WriteLine("Deserializing configuration...");
             Config.Deserialize(configFile);
+
+            Console.WriteLine(Config.Token);
+            Console.WriteLine(Config.DefaultPrefix);
             
             while (Config.Token == null || Config.DefaultPrefix == null || Config.Token == string.Empty || Config.DefaultPrefix == string.Empty)
             {

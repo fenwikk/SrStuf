@@ -9,6 +9,22 @@ namespace DiscordBot.Commands
 {
     public class UtilityCommands : BaseCommandModule
     {
+        [Command("info")]
+        [Description("Returns info on the bot")]
+        [Aliases("i")]
+        public async Task Info(CommandContext ctx)
+        {
+            var author = await ctx.Client.GetUserAsync(Bot.Config.AuthorId);
+
+            var embed = Bot.CreateEmbed(ctx);
+            embed.WithFooter("Made by " + author.Username + "#" + author.Discriminator, author.AvatarUrl);
+            
+            embed.Title = ctx.Client.CurrentUser.Username + " Info";
+            embed.Description = Bot.Config.Description;
+
+            await ctx.RespondAsync(embed);
+        }
+
         [Command("ping")]
         [Description("Returns \"Pong!\"")]
         public async Task Ping(CommandContext ctx)
