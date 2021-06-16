@@ -86,7 +86,7 @@ namespace DiscordBot
 
         public void RegisterCommands()
         {
-            Commands.RegisterCommands<FunCommands>();
+            Commands.RegisterCommands<UtilityCommands>();
         }
         public static Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {
@@ -97,7 +97,22 @@ namespace DiscordBot
         {
             string prefix = Config.GetPrefix(msg.Channel.GuildId);
             
-            return Task.FromResult(msg.GetStringPrefixLength(prefix));
+            return Task.FromResult(msg.GetStringPrefixLength(prefix, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static DiscordEmbedBuilder CreateEmbed(CommandContext ctx)
+        {
+            string time = ctx.Message.Timestamp.ToString("HH:mm");
+
+            return new DiscordEmbedBuilder
+            {
+                Color = ctx.Guild.CurrentMember.Color,
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {                
+                    IconUrl = ctx.Member.AvatarUrl,
+                    Text = ctx.Member.DisplayName + " • Today at " + time
+                }      
+            };
         }
     }
 }
