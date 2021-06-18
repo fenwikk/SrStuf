@@ -36,6 +36,10 @@ namespace DiscordBot.Commands
             
             embed.AddField("Prefix(es)", "`" + string.Join("`, `", prefixes) + "`");
 
+            embed.AddField("Invite Me", "You can add me to your server by clicking here:\nhttp://bit.ly/SenorStuf");
+
+            embed.AddField("Support", "If you have questions, suggestions, or found a bug, please report it on Github:\nhttp://bit.ly/StufSupport \nor join my Discord Server:\nhttps://discord.gg/RHPrWYnm8j");
+
             await ctx.RespondAsync(embed);
         }
 
