@@ -22,15 +22,17 @@ namespace DiscordBot.Commands
                 var json = string.Empty;
                 try 
                 {
-                    json = w.DownloadString("https://meme-api.herokuapp.com/gimme");
+                    json = w.DownloadString("https://meme-api.herokuapp.com/gimme/1");
+                    
+                        Console.WriteLine("1");
                 }
                 catch (Exception) {}
-                var meme = JsonConvert.DeserializeObject<Meme>(json);
+                var meme = JsonConvert.DeserializeObject<Memes>(json);
                 var embed = Bot.CreateEmbed(ctx)
-                    .WithTitle(meme.title)
-                    .WithUrl(meme.postLink)
-                    .WithImageUrl(meme.url)
-                    .WithFooter("👍 " + meme.ups + "   |   🏫  /r/" + meme.subreddit);
+                    .WithTitle(meme.memes[0].title)
+                    .WithUrl(meme.memes[0].postLink)
+                    .WithImageUrl(meme.memes[0].url)
+                    .WithFooter("👍 " + meme.memes[0].ups + "   |   🏫  /r/" + meme.memes[0].subreddit);
 
                 await ctx.RespondAsync(embed);
             }
@@ -44,83 +46,37 @@ namespace DiscordBot.Commands
                 var json = string.Empty;
                 try 
                 {
-                    json = w.DownloadString("https://meme-api.herokuapp.com/gimme/" + subreddit);
+                    json = w.DownloadString("https://meme-api.herokuapp.com/gimme/1" + subreddit);
+                    
+                        Console.WriteLine("json");
                 }
                 catch (Exception) {}
-                var meme = JsonConvert.DeserializeObject<Meme>(json);
+                var meme = JsonConvert.DeserializeObject<Memes>(json);
                 var embed = Bot.CreateEmbed(ctx)
-                    .WithTitle(meme.title)
-                    .WithUrl(meme.postLink)
-                    .WithImageUrl(meme.url)
-                    .WithFooter("👍 " + meme.ups + "   |   🏫  /r/" + meme.subreddit);
+                    .WithTitle(meme.memes[0].title)
+                    .WithUrl(meme.memes[0].postLink)
+                    .WithImageUrl(meme.memes[0].url)
+                    .WithFooter("👍 " + meme.memes[0].ups + "   |   🏫  /r/" + meme.memes[0].subreddit);
 
                 await ctx.RespondAsync(embed);
             }
         } 
 
-        [Command("meme")]
-        public async Task Gimme(CommandContext ctx, int amount)
+        class Memes
         {
-            List<Meme> memes = new List<Meme>();
+            public List<Meme> memes;
 
-            for (int i = 0; i < amount; i++)
-            {    
-                using (var w = new WebClient()) 
-                {
-                    var json = string.Empty;
-                    try 
-                    {
-                        json = w.DownloadString("https://meme-api.herokuapp.com/gimme");
-                    }
-                    catch (Exception) {}
-                    var meme = JsonConvert.DeserializeObject<Meme>(json);
-                    
-                    var embed = Bot.CreateEmbed(ctx)
-                        .WithTitle(meme.title)
-                        .WithUrl(meme.postLink)
-                        .WithImageUrl(meme.url)
-                        .WithFooter("👍 " + meme.ups + "   |   🏫  /r/" + meme.subreddit);
-
-                    await ctx.RespondAsync(embed);
-                }
+            public class Meme
+            {
+                public string postLink;
+                public string subreddit;
+                public string title;
+                public string url;
+                public string nsfw;
+                public string spoiler;
+                public string author;
+                public string ups;
             }
-        } 
-
-        [Command("meme")]
-        public async Task Gimme(CommandContext ctx, string subreddit, int amount)
-        {
-            for (int i = 0; i < amount; i++)
-            {    
-                using (var w = new WebClient()) 
-                {
-                    var json = string.Empty;
-                    try 
-                    {
-                        json = w.DownloadString("https://meme-api.herokuapp.com/gimme/" + subreddit);
-                    }
-                    catch (Exception) {}
-                    var meme = JsonConvert.DeserializeObject<Meme>(json);
-                    var embed = Bot.CreateEmbed(ctx)
-                        .WithTitle(meme.title)
-                        .WithUrl(meme.postLink)
-                        .WithImageUrl(meme.url)
-                        .WithFooter("👍 " + meme.ups + "   |   🏫  /r/" + meme.subreddit);
-
-                    await ctx.RespondAsync(embed);
-                }
-            }
-        } 
-
-        class Meme
-        {
-            public string postLink;
-            public string subreddit;
-            public string title;
-            public string url;
-            public string nsfw;
-            public string spoiler;
-            public string author;
-            public string ups;
         }
     }
 }
