@@ -110,6 +110,7 @@ namespace DiscordBot
             if (char.IsLetter(longPrefix.ToCharArray().First()))
             {
                 var shortPrefix = longPrefix.ToCharArray().First() + "!";
+                prefixes.Add(shortPrefix);
             }
 
             foreach (var prefix in prefixes)
