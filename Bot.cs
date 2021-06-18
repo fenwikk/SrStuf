@@ -107,7 +107,7 @@ namespace DiscordBot
             string longPrefix = Config.GetPrefix(msg.Channel.GuildId);
             prefixes.Add(longPrefix);
             
-            if (char.IsLetter(longPrefix.ToCharArray().First()))
+            if (char.IsLetter(longPrefix.ToCharArray().First()) && longPrefix.Length > 2)
             {
                 var shortPrefix = longPrefix.ToCharArray().First() + "!";
                 prefixes.Add(shortPrefix);
