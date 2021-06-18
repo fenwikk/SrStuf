@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using DSharpPlus.Entities;
@@ -18,9 +20,21 @@ namespace DiscordBot.Commands
 
             var embed = Bot.CreateEmbed(ctx);
             embed.WithFooter("Made by " + author.Username + "#" + author.Discriminator, author.AvatarUrl);
-            
+
             embed.Title = ctx.Client.CurrentUser.Username + " Info";
             embed.Description = Bot.Config.Description;
+
+            var prefixes = new List<string>();
+            string longPrefix = Bot.Config.GetPrefix(ctx.Guild.Id);
+            prefixes.Add(longPrefix);
+            
+            if (char.IsLetter(longPrefix.ToCharArray().First()) && longPrefix.Length > 2)
+            {
+                var shortPrefix = longPrefix.ToCharArray().First() + "!";
+                prefixes.Add(shortPrefix);
+            }
+            
+            embed.AddField("Prefix(es)", "`" + string.Join("`, `", prefixes + "`"));
 
             await ctx.RespondAsync(embed);
         }
