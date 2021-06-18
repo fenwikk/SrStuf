@@ -34,7 +34,7 @@ namespace DiscordBot.Commands
                 prefixes.Add(shortPrefix);
             }
             
-            embed.AddField("Prefix(es)", "`" + string.Join("`, `", prefixes + "`"));
+            embed.AddField("Prefix(es)", "`" + string.Join("`, `", prefixes) + "`");
 
             await ctx.RespondAsync(embed);
         }
