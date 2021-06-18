@@ -62,6 +62,12 @@ namespace DiscordBot.Commands
             }
         } 
 
+        [Command("tiky")]
+        public async Task Tiky(CommandContext ctx)
+        {
+            await ctx.RespondAsync(":cookie:");
+        } 
+
         class Memes
         {
             public List<Meme> memes;
