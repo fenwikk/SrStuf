@@ -45,13 +45,13 @@ namespace DiscordBot
 
             Serialize(configFileName);
         }
-        public void Serialize(string configFileName)
+        public void Serialize(string configFileName = Bot.configFile)
         {
             string jsonString = JsonConvert.SerializeObject(this);
             File.WriteAllText(configFileName, jsonString);
         }
 
-        public void Deserialize(string configFileName)
+        public void Deserialize(string configFileName = Bot.configFile)
         {
             string jsonString = File.ReadAllText(configFileName);
             Configuration config;
@@ -109,5 +109,8 @@ namespace DiscordBot
     {
         public ulong id;
         public string prefix;
+        public bool welcomeModule = true;
+        public ulong welcomeChannel;
+        public string welcomeMessage = "Welcome {user}!";
     }
 }

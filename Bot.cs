@@ -21,7 +21,7 @@ namespace DiscordBot
         public static PrefixResolverDelegate PrefixResolver { get; set; }
         public static Configuration Config { get; set; }
 
-        public static string configFile = "config.json";
+        public const string configFile = "config.json";
         
         public async Task RunAsync()
         {
@@ -90,6 +90,8 @@ namespace DiscordBot
         public void RegisterCommands()
         {
             Commands.RegisterCommands<UtilityCommands>();
+            Commands.RegisterCommands<FunCommands>();
+            Commands.RegisterCommands<EditCommands>();
         }
         public static Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {
