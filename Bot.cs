@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using DiscordBot.Commands;
 
@@ -100,9 +102,23 @@ namespace DiscordBot
 
         public static Task<int> ResolvePrefixAsync(DiscordMessage msg)
         {
-            string prefix = Config.GetPrefix(msg.Channel.GuildId);
+            List<string> prefixes = new List<string>();
+
+            string longPrefix = Config.GetPrefix(msg.Channel.GuildId);
+            prefixes.Add(longPrefix);
             
-            return Task.FromResult(msg.GetStringPrefixLength(prefix, StringComparison.OrdinalIgnoreCase));
+            if (char.IsLetter(longPrefix.ToCharArray().First()))
+            {
+                var shortPrefix = longPrefix.ToCharArray().First() + "!";
+            }
+
+            foreach (var prefix in prefixes)
+            {
+                if (msg.GetStringPrefixLength(prefix, StringComparison.OrdinalIgnoreCase) != -1)
+                    return Task.FromResult(msg.GetStringPrefixLength(prefix, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return Task.FromResult(-1);
         }
 
         public static DiscordEmbedBuilder CreateEmbed(CommandContext ctx)
