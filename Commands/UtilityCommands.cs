@@ -18,8 +18,9 @@ namespace DiscordBot.Commands
         {
             var author = await ctx.Client.GetUserAsync(Bot.Config.AuthorId);
 
-            var embed = Bot.CreateEmbed(ctx);
-            embed.WithFooter("Made by " + author.Username + "#" + author.Discriminator, author.AvatarUrl);
+            var embed = Bot.CreateEmbed(ctx)
+                .WithFooter("Made by " + author.Username + "#" + author.Discriminator, author.AvatarUrl)
+                .WithThumbnail(ctx.Guild.CurrentMember.AvatarUrl);
 
             embed.Title = ctx.Client.CurrentUser.Username + " Info";
             embed.Description = Bot.Config.Description;
@@ -38,9 +39,8 @@ namespace DiscordBot.Commands
 
             embed.AddField("Invite Me", "You can add me to your server by clicking here:\nhttp://bit.ly/SenorStuf");
 
-            embed.AddField("Support", "If you have questions, suggestions, or found a bug, please report it on Github:\nhttp://bit.ly/StufSupport \nor join my Discord Server:\nhttps://discord.gg/RHPrWYnm8j");
+            embed.AddField("Support", "If you have questions, suggestions, or found a bug, please report it on Github:\nhttp://bit.ly/StufSupport");
 
-            embed.AddField("", ""); // Empty space
             await ctx.RespondAsync(embed);
         }
 

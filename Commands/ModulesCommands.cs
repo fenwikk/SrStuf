@@ -21,31 +21,37 @@ namespace DiscordBot.Commands
         public async Task Modules(CommandContext ctx)
         {
             var guild = Bot.Config.GetGuild(ctx.Guild.Id);
-            var baseEmbed = Bot.CreateEmbed(ctx)
-                .WithFooter("", "");
+            var baseEmbed = Bot.CreateEmbed(ctx);
             
             var buttons = new DiscordButtonComponent[2];
-
             var messages = new List<DiscordMessage>();
 
+            Console.WriteLine("setup");
 
             if (guild.welcomeModule == true)
             {
-                buttons[1] = new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit");
-                buttons[2] = new DiscordButtonComponent(ButtonStyle.Danger, "welcomeModule", "Disable");
+                buttons = new DiscordButtonComponent[]
+                {
+                    new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit"),
+                    new DiscordButtonComponent(ButtonStyle.Danger, "welcomeModule", "Disable")
+                };
             }
             else
             {
-                buttons[1] = new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit", true);
-                buttons[2] = new DiscordButtonComponent(ButtonStyle.Success, "welcomeModule", "Enable");
+                buttons = new DiscordButtonComponent[]
+                {
+                    new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit", true),
+                    new DiscordButtonComponent(ButtonStyle.Success, "welcomeModule", "Enable")
+                };
             }
 
-            messages.Add(await ctx.Channel
+            var welcome = await ctx.Channel
                 .SendMessageAsync(new DiscordMessageBuilder()
                     .WithEmbed(baseEmbed
                         .WithTitle("Welcome Module")
                         .WithDescription("Welcomes new users to the server!"))
-                    .AddComponents()));
+                    .AddComponents(buttons));
+            messages.Add(welcome);
 
             
             var buttonPressed = string.Empty;
