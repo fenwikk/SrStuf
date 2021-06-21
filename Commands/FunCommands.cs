@@ -68,6 +68,12 @@ namespace DiscordBot.Commands
             await ctx.RespondAsync(":cookie:");
         } 
 
+        [Command("fbi")]
+        public async Task FBI(CommandContext ctx)
+        {
+            await ctx.RespondAsync("​To whatever FBI agent is in this discord, I do not affiliate with these people and myself and have no relation at all with this server. I do no condone any thing that is posted here, by people and by me.\n\nIn case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it, I do not know how I am here, probably added by a third party, I do not support any actions by  members of this group");
+        } 
+
         class Memes
         {
             public List<Meme> memes;

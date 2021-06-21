@@ -84,7 +84,7 @@ namespace DiscordBot
 
             Client = new DiscordClient(config);
             Client.Ready += OnClientReady;
-
+            
             Commands = Client.UseCommandsNext(commandsConfig);
             Client.UseInteractivity(interactivityConfig);
         }
@@ -93,7 +93,7 @@ namespace DiscordBot
         {
             Commands.RegisterCommands<UtilityCommands>();
             Commands.RegisterCommands<FunCommands>();
-            Commands.RegisterCommands<EditCommands>();
+            Commands.RegisterCommands<ModulesCommands>();
         }
         public static Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {

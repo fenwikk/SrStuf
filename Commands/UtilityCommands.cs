@@ -40,6 +40,7 @@ namespace DiscordBot.Commands
 
             embed.AddField("Support", "If you have questions, suggestions, or found a bug, please report it on Github:\nhttp://bit.ly/StufSupport \nor join my Discord Server:\nhttps://discord.gg/RHPrWYnm8j");
 
+            embed.AddField("", ""); // Empty space
             await ctx.RespondAsync(embed);
         }
 
