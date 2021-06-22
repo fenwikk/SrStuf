@@ -13,27 +13,56 @@ namespace DiscordBot
         public string DefaultPrefix { get; set; }
         public List<Guild> Guilds { get; set; }
         public string Description { get; set; }
+        public TimeSpan Timeout { get; set; }
 
         public void Setup(string configFileName)
         {
-            if (Token == string.Empty || Token == null)
+            while (Token == string.Empty || Token == null)
             {
                 Console.WriteLine("Token*: ");
                 Token = Console.ReadLine();
             }
-            if (DefaultPrefix == string.Empty || DefaultPrefix == null)
+            while (DefaultPrefix == string.Empty || DefaultPrefix == null)
             {
                 Console.WriteLine("\nDefault Prefix*: ");
                 DefaultPrefix= Console.ReadLine();
             }
-            if (AuthorId == 0)
+            while (AuthorId == 0)
             {
                 Console.WriteLine("\nAuthor Id (default: 393368613652004877): ");
-                AuthorId = Convert.ToUInt64(Console.ReadLine());
-                if (AuthorId == 0)
-                    AuthorId = 393368613652004877;
+                var input = Console.ReadLine();
+
+                if (int.TryParse(input, out var id))
+                {
+                    if (id.ToString().Length == 18)
+                        AuthorId = (ulong)id;
+                    else
+                        Console.WriteLine("Input must be a Discord Snowflake (integer with 18 digits)");
+                }
+                else
+                {
+                    if (input == string.Empty)
+                        AuthorId = 393368613652004877;
+                    else
+                        Console.WriteLine("Input must be a Discord Snowflake (integer with 18 digits)");
+                }
             }
-            if (Description == string.Empty || Description == null)
+            while (Timeout == TimeSpan.Zero)
+            {
+                Console.WriteLine("\nInteraction Timeout (in seconds, defaults to 60): ");
+                var input = Console.ReadLine();
+
+                if (int.TryParse(input, out var seconds))
+                    Timeout = TimeSpan.FromSeconds(seconds);
+                else
+                {
+                    if (input == string.Empty)
+                        Timeout = TimeSpan.FromSeconds(60);
+                    else
+                        Console.WriteLine("Input must be an integer");
+                }
+            }
+            while (Description == string.Empty || Description == null)
             {
                 Console.WriteLine("\nBot Description: ");
                 Description = Console.ReadLine();

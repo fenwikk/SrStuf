@@ -26,8 +26,33 @@ namespace DiscordBot.Commands
             var buttons = new DiscordButtonComponent[2];
             var messages = new List<DiscordMessage>();
 
-            Console.WriteLine("setup");
+            if (guild.welcomeModule == true)
+            {
+                buttons = new DiscordButtonComponent[]
+                {
+                    new DiscordButtonComponent(ButtonStyle.Primary, "previewWelcome", "Preview"),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit"),
+                    new DiscordButtonComponent(ButtonStyle.Danger, "welcomeModule", "Disable")
+                };
+            }
+            else
+            {
+                buttons = new DiscordButtonComponent[]
+                {
+                    new DiscordButtonComponent(ButtonStyle.Primary, "previewWelcome", "Preview", true),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit", true),
+                    new DiscordButtonComponent(ButtonStyle.Success, "welcomeModule", "Enable")
+                };
+            }
 
+            var welcome = await ctx.Channel
+                .SendMessageAsync(new DiscordMessageBuilder()
+                    .WithEmbed(baseEmbed
+                        .WithTitle("Welcome Module")
+                        .WithDescription("Welcomes new users to the server!"))
+                    .AddComponents(buttons));
+            messages.Add(welcome);
+            
             if (guild.welcomeModule == true)
             {
                 buttons = new DiscordButtonComponent[]
@@ -45,27 +70,52 @@ namespace DiscordBot.Commands
                 };
             }
 
-            var welcome = await ctx.Channel
+            var quickActions = await ctx.Channel
                 .SendMessageAsync(new DiscordMessageBuilder()
                     .WithEmbed(baseEmbed
                         .WithTitle("Welcome Module")
                         .WithDescription("Welcomes new users to the server!"))
                     .AddComponents(buttons));
             messages.Add(welcome);
+            
 
             
             var buttonPressed = string.Empty;
             ctx.Client.ComponentInteractionCreated += async (s, e) =>
             {
                 buttonPressed = e.Id;
-                foreach (var message in messages)
-                {
-                    await message.DeleteAsync();
-                }
+                await DeleteAllMessagesAsync(messages);
             };
 
-            while (buttonPressed == string.Empty);
+            while (buttonPressed == string.Empty || DateTime.UtcNow > ctx.Message.CreationTimestamp + Bot.Config.Timeout - TimeSpan.FromSeconds(5));
 
+            if (buttonPressed == "previewWelcome")
+            {
+                string welcomeChannel;
+                if (guild.welcomeChannel != 0)
+                {
+                    var channel = await ctx.Client.GetChannelAsync(guild.welcomeChannel);
+
+                    welcomeChannel = "In " + channel.Mention;
+                }
+                else
+                {
+                    welcomeChannel = "In *no Welcome Channel set*";
+                }
+
+                var welcomeEmbed = await ctx.Channel
+                    .SendMessageAsync(new DiscordMessageBuilder()
+                    .WithContent(welcomeChannel)
+                    .WithEmbed(WelcomeModule.CreateEmbed(ctx.User)));
+                    
+                var welcomeMessage = await ctx.Channel
+                    .SendMessageAsync(guild.welcomeMessage
+                    .Replace("{user}", ctx.Member.Mention));
+            }
+            else if (buttonPressed == "editWelcome")
+            {
+                await Welcome(ctx);
+            }
             if (buttonPressed == "welcomeModule")
             {
                 if (guild.welcomeModule)
@@ -79,6 +129,14 @@ namespace DiscordBot.Commands
                     await ctx.RespondAsync("Welcome Module set to: Enabled");
                 }
             }
+            else if (DateTime.UtcNow > ctx.Message.CreationTimestamp + Bot.Config.Timeout - TimeSpan.FromSeconds(5))
+            {
+                await ctx.RespondAsync("Timeout reached.");
+                await DeleteAllMessagesAsync(messages);
+                return;
+            }
+
+            Bot.Config.Serialize();
         }
 
         [Command("welcome")]
@@ -121,8 +179,7 @@ namespace DiscordBot.Commands
                     .AddComponents(new DiscordButtonComponent[]
                     {
                         new DiscordButtonComponent(ButtonStyle.Primary, "channel", "Edit Channel"),
-                        new DiscordButtonComponent(ButtonStyle.Primary, "message", "Edit Message"),
-                        new DiscordButtonComponent(ButtonStyle.Danger, "disable", "Disable Module")
+                        new DiscordButtonComponent(ButtonStyle.Primary, "message", "Edit Message")
                     });
 
                 await ctx.Channel.SendMessageAsync(buttonBuilder);
@@ -176,14 +233,6 @@ namespace DiscordBot.Commands
                     
                     guild.welcomeMessage = newMessage.Result.Content;
                 }
-                else if (buttonPressed == "disable") // Turn off the Welcome Module
-                {
-                    guild.welcomeModule = false;
-
-                    await welcomeEmbed.DeleteAsync();
-                    await welcomeMessage.DeleteAsync();
-                }
-
             }
             else
             {

@@ -49,14 +49,17 @@ namespace DiscordBot
             Console.WriteLine("Deserializing configuration...");
             Config.Deserialize(configFile);
 
-            Console.WriteLine(Config.Token);
-            Console.WriteLine(Config.DefaultPrefix);
-            
-            while (Config.Token == null || Config.DefaultPrefix == null || Config.Token == string.Empty || Config.DefaultPrefix == string.Empty)
+            Console.WriteLine("Checking for missing variables...");
+            while (Config.Token == null || Config.DefaultPrefix == null || Config.Token == string.Empty || Config.Timeout == TimeSpan.Zero || Config.DefaultPrefix == string.Empty)
             {
                 Console.WriteLine("Configuration not complete! Please fill in required fields:");
                 Config.Setup(configFile);
             }
+            Config.Setup(configFile);
+
+            Console.WriteLine(Config.Token);
+            Console.WriteLine(Config.DefaultPrefix);
+            
         }
 
         public void CreateSetupClient()
@@ -79,7 +82,7 @@ namespace DiscordBot
 
             var interactivityConfig = new InteractivityConfiguration()
             {
-                PaginationBehaviour = default,
+                Timeout = Bot.Config.Timeout
             };
 
             Client = new DiscordClient(config);
