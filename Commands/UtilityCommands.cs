@@ -37,11 +37,15 @@ namespace DiscordBot.Commands
             
             embed.AddField("Prefix(es)", "`" + string.Join("`, `", prefixes) + "`");
 
-            embed.AddField("Invite Me", "You can add me to your server by clicking here:\nhttp://bit.ly/SenorStuf");
+            embed.AddField("Support", "If you have questions, suggestions, or found a bug, please report it on Github by clicking the support button below");
 
-            embed.AddField("Support", "If you have questions, suggestions, or found a bug, please report it on Github:\nhttp://bit.ly/StufSupport");
-
-            await ctx.RespondAsync(embed);
+            await ctx.RespondAsync(new DiscordMessageBuilder()
+                .WithEmbed(embed)
+                .AddComponents(new DiscordLinkButtonComponent[]
+                {
+                    new DiscordLinkButtonComponent("http://bit.ly/SenorStuf", "Invite Me!"),
+                    new DiscordLinkButtonComponent("http://bit.ly/StufSupport", "Support")
+                }));
         }
 
         [Command("ping")]
