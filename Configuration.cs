@@ -92,6 +92,7 @@ namespace DiscordBot
             Guilds = config.Guilds;
             AuthorId = config.AuthorId;
             Description = config.Description;
+            Timeout = config.Timeout;
         }
 
         public string GetPrefix(ulong? guildId)
