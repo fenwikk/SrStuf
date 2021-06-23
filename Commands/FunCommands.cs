@@ -60,7 +60,71 @@ namespace DiscordBot.Commands
 
                 await ctx.RespondAsync(embed);
             }
-        } 
+        }
+
+        [Command("tictactoe")]
+        [Aliases("ttt", "tictac")]
+        public async Task TicTacToe(CommandContext ctx, DiscordUser opponent)
+        {
+            char[,] playfield =
+            {
+                {'0', '0', '0'},
+                {'0', '0', '0'},
+                {'0', '0', '0'}
+            };
+            var xTurn = false;
+
+            var field = await ctx.RespondAsync(CreatePlayfield());
+
+            ctx.Client.ComponentInteractionCreated += async (s, e) =>
+            {
+                if (e.User == (xTurn ? opponent : ctx.User))
+                {
+                    switch (e.Id)
+                    {
+                        case "1": playfield[0, 0] = xTurn ? 'X' : 'O'; break;
+                        case "2": playfield[0, 1] = xTurn ? 'X' : 'O'; break;
+                        case "3": playfield[0, 2] = xTurn ? 'X' : 'O'; break;
+
+                        case "4": playfield[1, 0] = xTurn ? 'X' : 'O'; break;
+                        case "5": playfield[1, 1] = xTurn ? 'X' : 'O'; break;
+                        case "6": playfield[1, 2] = xTurn ? 'X' : 'O'; break;
+                        
+                        case "7": playfield[2, 0] = xTurn ? 'X' : 'O'; break;
+                        case "8": playfield[2, 1] = xTurn ? 'X' : 'O'; break;
+                        case "9": playfield[2, 2] = xTurn ? 'X' : 'O'; break;
+                    }
+                    xTurn = !xTurn;
+                    await field.ModifyAsync(CreatePlayfield());
+                }
+            };
+
+            DiscordMessageBuilder CreatePlayfield()
+            {
+                DiscordButtonComponent CreateTile(char tilePos, string buttonId) =>
+                    new DiscordButtonComponent((tilePos == '0') ? ButtonStyle.Secondary : ((tilePos == 'X') ? ButtonStyle.Primary : ButtonStyle.Success), buttonId, "", (tilePos == '0') ? false : true, (tilePos == '0') ? null : new DiscordComponentEmoji((tilePos == 'X') ? "x" : "o"));
+
+                return new DiscordMessageBuilder()
+                    .AddComponents(new DiscordButtonComponent[]
+                    {
+                        CreateTile(playfield[0, 0], "1"),
+                        CreateTile(playfield[0, 1], "2"),
+                        CreateTile(playfield[0, 2], "3")
+                    })
+                    .AddComponents(new DiscordButtonComponent[]
+                    {
+                        CreateTile(playfield[1, 0], "4"),
+                        CreateTile(playfield[1, 1], "5"),
+                        CreateTile(playfield[1, 2], "6"),
+                    })
+                    .AddComponents(new DiscordButtonComponent[]
+                    {
+                        CreateTile(playfield[2, 0], "7"),
+                        CreateTile(playfield[2, 1], "8"),
+                        CreateTile(playfield[2, 2], "9"),
+                    });
+            }
+        }
 
         [Command("tiky")]
         public async Task Tiky(CommandContext ctx)
