@@ -55,11 +55,6 @@ namespace DiscordBot
                 Console.WriteLine("Configuration not complete! Please fill in required fields:");
                 Config.Setup(configFile);
             }
-            Config.Setup(configFile);
-
-            Console.WriteLine(Config.Token);
-            Console.WriteLine(Config.DefaultPrefix);
-            
         }
 
         public void CreateSetupClient()

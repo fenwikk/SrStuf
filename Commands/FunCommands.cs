@@ -69,51 +69,28 @@ namespace DiscordBot.Commands
         {
             var messages = new List<DiscordMessage>();
 
-            var challangeMessage = await ctx.RespondAsync(new DiscordMessageBuilder()
+            var challengeMessage = await ctx.RespondAsync(new DiscordMessageBuilder()
                 .WithEmbed(Bot.CreateEmbed(ctx)
-                    .WithTitle("TicTacToe Challange")
-                    .WithDescription(ctx.User.Mention + " challanges " + opponent.Mention + " to a TicTacToe battle!\nAccept?"))
+                    .WithTitle("TicTacToe Challenge")
+                    .WithDescription(ctx.User.Mention + " challenges " + opponent.Mention + " to a TicTacToe battle!\nAccept?"))
                 .AddComponents(new DiscordButtonComponent[]
                 {
                     new DiscordButtonComponent(ButtonStyle.Success, "yes", "✓"),
                     new DiscordButtonComponent(ButtonStyle.Danger, "no", "✕")
                 }));
 
-            var buttonPressed = false;
+            var buttonPressed = string.Empty;
             ctx.Client.ComponentInteractionCreated += ButtonPressed;
             async Task ButtonPressed(DiscordClient s, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
             {
+                await e.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.DefferedMessageUpdate, new DiscordInteractionResponseBuilder());
                 if (e.User == opponent)
                 {
-                    if (e.Id == "yes")
-                    {
-                        await challangeMessage.DeleteAsync();
-
-                        await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                            .WithTitle("Challange Accepted")
-                            .WithThumbnail(opponent.AvatarUrl)
-                            .WithColor(DiscordColor.Green));
-
-                        ctx.Client.ComponentInteractionCreated -= ButtonPressed;
-                        buttonPressed = true;
-                        await PlayTicTacToe(ctx, opponent);
-                    }
-                    else if (e.Id == "no")
-                    {
-                        await challangeMessage.DeleteAsync();
-                        
-                        await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                            .WithTitle("Challange Declined")
-                            .WithThumbnail(opponent.AvatarUrl)
-                            .WithColor(DiscordColor.Red));
-                        
-                        ctx.Client.ComponentInteractionCreated -= ButtonPressed;
-                        buttonPressed = true;
-                    }
+                    buttonPressed = e.Id;
                 }
             }
 
-            while (!buttonPressed)
+            while (buttonPressed == string.Empty)
             {
                 if (DateTime.UtcNow > ctx.Message.CreationTimestamp + Bot.Config.Timeout)
                 {
@@ -123,7 +100,32 @@ namespace DiscordBot.Commands
                         .WithColor(DiscordColor.Red));
                     
                     ctx.Client.ComponentInteractionCreated -= ButtonPressed;
+                    return;
                 }
+            }
+
+            if (buttonPressed == "yes")
+            {
+                await challengeMessage.DeleteAsync();
+
+                await ctx.RespondAsync(Bot.CreateEmbed(ctx)
+                    .WithTitle("Challenge Accepted")
+                    .WithThumbnail(opponent.AvatarUrl)
+                    .WithColor(DiscordColor.Green));
+
+                ctx.Client.ComponentInteractionCreated -= ButtonPressed;
+                await PlayTicTacToe(ctx, opponent);
+            }
+            else if (buttonPressed == "no")
+            {
+                await challengeMessage.DeleteAsync();
+                
+                await ctx.RespondAsync(Bot.CreateEmbed(ctx)
+                    .WithTitle("Challenge Declined")
+                    .WithThumbnail(opponent.AvatarUrl)
+                    .WithColor(DiscordColor.Red));
+                
+                ctx.Client.ComponentInteractionCreated -= ButtonPressed;
             }
         }
 
@@ -140,12 +142,13 @@ namespace DiscordBot.Commands
 
             var gameDone = false;
 
-            var field = await ctx.RespondAsync(CreatePlayfield(ctx.User));
+            var field = await ctx.Channel.SendMessageAsync(CreatePlayfield(ctx.User));
 
             ctx.Client.ComponentInteractionCreated += ButtonPressed;
-
             async Task ButtonPressed(DiscordClient s, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
             {
+                await e.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.DefferedMessageUpdate, new DiscordInteractionResponseBuilder());
+
                 var currentPlayer = xTurn ? opponent : ctx.User;
                 if (e.User == currentPlayer)
                 {
@@ -165,7 +168,6 @@ namespace DiscordBot.Commands
                         case "8": playfield[2, 1] = playerChar; break;
                         case "9": playfield[2, 2] = playerChar; break;
                     }
-                    await e.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.DefferedMessageUpdate, new DiscordInteractionResponseBuilder());
                     await field.ModifyAsync(CreatePlayfield(xTurn ? ctx.User : opponent));
                     xTurn = !xTurn;
                     turns++;
@@ -185,12 +187,12 @@ namespace DiscordBot.Commands
                         await field.ModifyAsync(CreatePlayfield(xTurn ? ctx.User : opponent)
                             .WithEmbed(Bot.CreateEmbed(ctx)
                                 .WithTitle(currentPlayer.Username + " has won!")
-                                .WithColor(DiscordColor.Green)
+                                .WithColor(DiscordColor.SapGreen)
                                 .WithThumbnail(currentPlayer.AvatarUrl)));
 
                         Console.WriteLine(playfield);
                     }
-                    else if (turns == 10)
+                    else if (turns == 9)
                     {
                         gameDone = true;
                         await field.ModifyAsync(CreatePlayfield(xTurn ? ctx.User : opponent)
@@ -259,9 +261,6 @@ namespace DiscordBot.Commands
                 public string subreddit;
                 public string title;
                 public string url;
-                public string nsfw;
-                public string spoiler;
-                public string author;
                 public string ups;
             }
         }
