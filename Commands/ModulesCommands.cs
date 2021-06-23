@@ -56,8 +56,11 @@ namespace DiscordBot.Commands
             var buttonPressed = string.Empty;
             ctx.Client.ComponentInteractionCreated += async (s, e) =>
             {
-                buttonPressed = e.Id;
-                await DeleteAllMessagesAsync(messages);
+                if (e.User == ctx.User)
+                {
+                    buttonPressed = e.Id;
+                    await DeleteAllMessagesAsync(messages);
+                }
             };
 
             while (buttonPressed == string.Empty || DateTime.UtcNow > ctx.Message.CreationTimestamp + Bot.Config.Timeout - TimeSpan.FromSeconds(5));
