@@ -8,7 +8,6 @@ namespace DiscordBot
         {
             var bot = new Bot();
 
-            Console.Clear();
             WriteTitle();
 
             Console.WriteLine("Loading Bot...");
@@ -31,7 +30,7 @@ namespace DiscordBot
 
         public static void WriteTitle()
         {
-                                                       
+            Console.Clear();                                
             Console.WriteLine(@"       ____  _                   _     _____     _         ");
             Console.WriteLine(@"      |    \|_|___ ___ ___ ___ _| |   | __  |___| |_       ");
             Console.WriteLine(@"      |  |  | |_ -|  _| . |  _| . |   | __ -| . |  _|      ");

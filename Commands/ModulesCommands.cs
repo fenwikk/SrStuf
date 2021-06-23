@@ -53,33 +53,6 @@ namespace DiscordBot.Commands
                     .AddComponents(buttons));
             messages.Add(welcome);
             
-            if (guild.welcomeModule == true)
-            {
-                buttons = new DiscordButtonComponent[]
-                {
-                    new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit"),
-                    new DiscordButtonComponent(ButtonStyle.Danger, "welcomeModule", "Disable")
-                };
-            }
-            else
-            {
-                buttons = new DiscordButtonComponent[]
-                {
-                    new DiscordButtonComponent(ButtonStyle.Secondary, "editWelcome", "Edit", true),
-                    new DiscordButtonComponent(ButtonStyle.Success, "welcomeModule", "Enable")
-                };
-            }
-
-            var quickActions = await ctx.Channel
-                .SendMessageAsync(new DiscordMessageBuilder()
-                    .WithEmbed(baseEmbed
-                        .WithTitle("Welcome Module")
-                        .WithDescription("Welcomes new users to the server!"))
-                    .AddComponents(buttons));
-            messages.Add(welcome);
-            
-
-            
             var buttonPressed = string.Empty;
             ctx.Client.ComponentInteractionCreated += async (s, e) =>
             {
@@ -95,13 +68,10 @@ namespace DiscordBot.Commands
                 if (guild.welcomeChannel != 0)
                 {
                     var channel = await ctx.Client.GetChannelAsync(guild.welcomeChannel);
-
                     welcomeChannel = "In " + channel.Mention;
                 }
                 else
-                {
                     welcomeChannel = "In *no Welcome Channel set*";
-                }
 
                 var welcomeEmbed = await ctx.Channel
                     .SendMessageAsync(new DiscordMessageBuilder()
