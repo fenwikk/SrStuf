@@ -69,10 +69,10 @@ namespace DiscordBot.Commands
         {
             var messages = new List<DiscordMessage>();
 
-            var challengeMessage = await ctx.RespondAsync(new DiscordMessageBuilder()
+            var challangeMessage = await ctx.RespondAsync(new DiscordMessageBuilder()
                 .WithEmbed(Bot.CreateEmbed(ctx)
-                    .WithTitle("TicTacToe Challenge")
-                    .WithDescription(ctx.User.Mention + " challenges " + opponent.Mention + " to a TicTacToe battle!\nAccept?"))
+                    .WithTitle("TicTacToe Challange")
+                    .WithDescription(ctx.User.Mention + " challanges " + opponent.Mention + " to a TicTacToe battle!\nAccept?"))
                 .AddComponents(new DiscordButtonComponent[]
                 {
                     new DiscordButtonComponent(ButtonStyle.Success, "yes", "✓"),
@@ -87,10 +87,10 @@ namespace DiscordBot.Commands
                 {
                     if (e.Id == "yes")
                     {
-                        await challengeMessage.DeleteAsync();
+                        await challangeMessage.DeleteAsync();
 
                         await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                            .WithTitle("Challenge Accepted")
+                            .WithTitle("Challange Accepted")
                             .WithThumbnail(opponent.AvatarUrl)
                             .WithColor(DiscordColor.Green));
 
@@ -100,10 +100,10 @@ namespace DiscordBot.Commands
                     }
                     else if (e.Id == "no")
                     {
-                        await challengeMessage.DeleteAsync();
+                        await challangeMessage.DeleteAsync();
                         
                         await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                            .WithTitle("Challenge Declined")
+                            .WithTitle("Challange Declined")
                             .WithThumbnail(opponent.AvatarUrl)
                             .WithColor(DiscordColor.Red));
                         
@@ -165,7 +165,7 @@ namespace DiscordBot.Commands
                         case "8": playfield[2, 1] = playerChar; break;
                         case "9": playfield[2, 2] = playerChar; break;
                     }
-                    await e.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.DefferedMessageUpdate));
+                    await e.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.DefferedMessageUpdate, new DiscordInteractionResponseBuilder());
                     await field.ModifyAsync(CreatePlayfield(xTurn ? ctx.User : opponent));
                     xTurn = !xTurn;
                     turns++;
