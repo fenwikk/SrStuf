@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using DiscordBot.Commands;
+using DiscordBot.Commands.SlashCommands;
 
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 
@@ -20,6 +22,7 @@ namespace DiscordBot
         public static DiscordClient Client { get; set; }
         public static InteractivityExtension Interactivity { get; set; }
         public static CommandsNextExtension Commands { get; set; }
+        public static SlashCommandsExtension Slash { get; set; }
         public static PrefixResolverDelegate PrefixResolver { get; set; }
         public static Configuration Config { get; set; }
 
@@ -75,7 +78,12 @@ namespace DiscordBot
                 EnableDms = false
             };
 
-            var interactivityConfig = new InteractivityConfiguration()
+            var slashConfig = new SlashCommandsConfiguration
+            {
+
+            };
+
+            var interactivityConfig = new InteractivityConfiguration
             {
                 Timeout = Bot.Config.Timeout
             };
@@ -84,14 +92,18 @@ namespace DiscordBot
             Client.Ready += OnClientReady;
             
             Commands = Client.UseCommandsNext(commandsConfig);
+            Slash = Client.UseSlashCommands(slashConfig);
             Client.UseInteractivity(interactivityConfig);
         }
 
         public void RegisterCommands()
         {
-            Commands.RegisterCommands<UtilityCommands>();
-            Commands.RegisterCommands<FunCommands>();
+            Commands.RegisterCommands<Commands.UtilityCommands>();
+            Commands.RegisterCommands<Commands.FunCommands>();
             Commands.RegisterCommands<ModulesCommands>();
+
+            Slash.RegisterCommands<Commands.SlashCommands.UtilityCommands>();
+            Slash.RegisterCommands<Commands.SlashCommands.FunCommands>();
         }
         public static Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {

@@ -1,22 +1,23 @@
 using System;
 using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
+using DiscordBot;
+
 using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using DSharpPlus.CommandsNext.Attributes;
 
-namespace DiscordBot.Commands
+namespace DiscordBot.Commands.SlashCommands
 {
-    public class FunCommands : BaseCommandModule
+    public class FunCommands : SlashCommandModule
     {
-        [Command("meme")]
-        [Description("Gets a meme from a land far, far away, in a great kingdom known as *Reddit*")]
-        [Aliases("gimme")]
-        public async Task Gimme(CommandContext ctx)
+        [SlashCommand("meme", "Gets a meme from a land far, far away, in a great kingdom known as *Reddit*")]
+        public async Task Gimme(InteractionContext ctx)
         {
             using (var w = new WebClient()) 
             {
@@ -29,18 +30,18 @@ namespace DiscordBot.Commands
                 }
                 catch (Exception) {}
                 var meme = JsonConvert.DeserializeObject<Memes>(json);
-                var embed = Bot.CreateEmbed(ctx)
+                var embed = new DiscordEmbedBuilder()
                     .WithTitle(meme.memes[0].title)
                     .WithUrl(meme.memes[0].postLink)
                     .WithImageUrl(meme.memes[0].url)
                     .WithFooter("👍 " + meme.memes[0].ups + "   |   🏫  /r/" + meme.memes[0].subreddit);
 
-                await ctx.RespondAsync(embed);
+                await ctx.Interaction.Channel.SendMessageAsync(embed);
             }
         } 
 
-        [Command("meme")]
-        public async Task Gimme(CommandContext ctx, string subreddit)
+        [SlashCommand("gimme", "Gets a meme from a land far, far away, in a great kingdom known as *Reddit*")]
+        public async Task Gimme(InteractionContext ctx, [Option("Subreddit", "Subreddit to get meme from")] string subreddit)
         {
             using (var w = new WebClient()) 
             {
@@ -51,26 +52,27 @@ namespace DiscordBot.Commands
                 }
                 catch (Exception) {}
                 var meme = JsonConvert.DeserializeObject<Memes>(json);
-                var embed = Bot.CreateEmbed(ctx)
+                var embed = new DiscordEmbedBuilder()
                     .WithTitle(meme.memes[0].title)
                     .WithUrl(meme.memes[0].postLink)
                     .WithImageUrl(meme.memes[0].url)
                     .WithFooter("👍 " + meme.memes[0].ups + "   |   🏫  /r/" + meme.memes[0].subreddit);
 
-                await ctx.RespondAsync(embed);
+                await ctx.Interaction.Channel.SendMessageAsync(embed);
             }
         }
 
-        [Command("tictactoe")]
-        [Aliases("ttt", "tictac")]
-        public async Task TicTacToe(CommandContext ctx, DiscordUser opponent)
+        [SlashCommand("tictactoe", "Challanges someone on a round of TicTacToe")]
+        public async Task TicTacToe(InteractionContext ctx, [Option("Opponent", "User to challenge")] DiscordUser opponent)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
             var messages = new List<DiscordMessage>();
 
-            var challengeMessage = await ctx.RespondAsync(new DiscordMessageBuilder()
-                .WithEmbed(Bot.CreateEmbed(ctx)
+            var challengeMessage = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                .AddEmbed(new DiscordEmbedBuilder()
                     .WithTitle("TicTacToe Challenge")
-                    .WithDescription(ctx.User.Mention + " challenges " + opponent.Mention + " to a TicTacToe battle!\nAccept?"))
+                    .WithDescription(ctx.Interaction.User.Mention + " challenges " + opponent.Mention + " to a TicTacToe battle!\nAccept?"))
                 .AddComponents(new DiscordButtonComponent[]
                 {
                     new DiscordButtonComponent(ButtonStyle.Success, "yes", "✓"),
@@ -90,12 +92,13 @@ namespace DiscordBot.Commands
 
             while (buttonPressed == string.Empty)
             {
-                if (DateTime.UtcNow > ctx.Message.CreationTimestamp + Bot.Config.Timeout)
+                if (DateTime.UtcNow > ctx.Interaction.CreationTimestamp + Bot.Config.Timeout)
                 {
-                    await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                        .WithTitle("Request Timeout")
-                        .WithThumbnail(opponent.AvatarUrl)
-                        .WithColor(DiscordColor.Red));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                        .AddEmbed(new DiscordEmbedBuilder()
+                            .WithTitle("Request Timeout")
+                            .WithThumbnail(opponent.AvatarUrl)
+                            .WithColor(DiscordColor.Red)));
                     
                     ctx.Client.ComponentInteractionCreated -= ButtonPressed;
                     return;
@@ -106,10 +109,11 @@ namespace DiscordBot.Commands
             {
                 await challengeMessage.DeleteAsync();
 
-                await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                    .WithTitle("Challenge Accepted")
-                    .WithThumbnail(opponent.AvatarUrl)
-                    .WithColor(DiscordColor.Green));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .AddEmbed(new DiscordEmbedBuilder()
+                        .WithTitle("Challenge Accepted")
+                        .WithThumbnail(opponent.AvatarUrl)
+                        .WithColor(DiscordColor.Green)));
 
                 ctx.Client.ComponentInteractionCreated -= ButtonPressed;
                 await PlayTicTacToe(ctx, opponent);
@@ -118,16 +122,17 @@ namespace DiscordBot.Commands
             {
                 await challengeMessage.DeleteAsync();
                 
-                await ctx.RespondAsync(Bot.CreateEmbed(ctx)
-                    .WithTitle("Challenge Declined")
-                    .WithThumbnail(opponent.AvatarUrl)
-                    .WithColor(DiscordColor.Red));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .AddEmbed(new DiscordEmbedBuilder()
+                        .WithTitle("Challenge Declined")
+                        .WithThumbnail(opponent.AvatarUrl)
+                        .WithColor(DiscordColor.Red)));
                 
                 ctx.Client.ComponentInteractionCreated -= ButtonPressed;
             }
         }
 
-        public async Task PlayTicTacToe(CommandContext ctx, DiscordUser opponent)
+        public async Task PlayTicTacToe(InteractionContext ctx, DiscordUser opponent)
         {
             char[,] playfield =
             {
@@ -183,7 +188,7 @@ namespace DiscordBot.Commands
                     {
                         gameDone = true;
                         await field.ModifyAsync(CreatePlayfield(xTurn ? ctx.User : opponent)
-                            .WithEmbed(Bot.CreateEmbed(ctx)
+                            .WithEmbed(new DiscordEmbedBuilder()
                                 .WithTitle(currentPlayer.Username + " has won!")
                                 .WithColor(DiscordColor.SapGreen)
                                 .WithThumbnail(currentPlayer.AvatarUrl)));
@@ -194,7 +199,7 @@ namespace DiscordBot.Commands
                     {
                         gameDone = true;
                         await field.ModifyAsync(CreatePlayfield(xTurn ? ctx.User : opponent)
-                            .WithEmbed(Bot.CreateEmbed(ctx)
+                            .WithEmbed(new DiscordEmbedBuilder()
                                 .WithTitle("DRAAAWW! The house wins!")
                                 .WithColor(DiscordColor.Gray)
                                 .WithThumbnail(ctx.Client.CurrentUser.AvatarUrl)));
@@ -212,7 +217,7 @@ namespace DiscordBot.Commands
                     new DiscordButtonComponent((tilePos == '0') ? ButtonStyle.Secondary : ((tilePos == 'X') ? ButtonStyle.Primary : ButtonStyle.Success), buttonId, (tilePos == '0') ? " " : (tilePos == 'X') ? "✕" : "◯", gameDone ? true : ((tilePos == '0') ? false : true));
 
                 return new DiscordMessageBuilder()
-                    .WithEmbed(Bot.CreateEmbed(ctx)
+                    .WithEmbed(new DiscordEmbedBuilder()
                         .WithTitle(ctx.Member.Username + " ◯ vs. " + opponent.Username + " ✕")
                         .WithDescription(currentPlayer.Mention + "\'s turn")
                         .WithThumbnail(currentPlayer.AvatarUrl))
@@ -238,15 +243,15 @@ namespace DiscordBot.Commands
         }
 
         [Command("tiky")]
-        public async Task Tiky(CommandContext ctx)
+        public async Task Tiky(InteractionContext ctx)
         {
-            await ctx.RespondAsync(":cookie:");
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(":cookie:"));
         } 
 
         [Command("fbi")]
-        public async Task FBI(CommandContext ctx)
+        public async Task FBI(InteractionContext ctx)
         {
-            await ctx.RespondAsync("​To whatever FBI agent is in this discord, I do not affiliate with these people and myself, and have absolutely no relation with this server whatsoever. I do not condone anything that is posted here, by people or by me.\n\nIn case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it, I do not know how got here, probably added by a third party, I do not support any actions by members of this group");
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("​To whatever FBI agent is in this discord, I do not affiliate with these people and myself, and have absolutely no relation with this server whatsoever. I do not condone anything that is posted here, by people or by me.\n\nIn case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it, I do not know how got here, probably added by a third party, I do not support any actions by members of this group"));
         } 
 
         class Memes
