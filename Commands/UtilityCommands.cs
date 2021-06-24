@@ -1,11 +1,14 @@
 using System;
+using System.Net;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using System.Globalization;
 
 namespace DiscordBot.Commands
 {
@@ -43,7 +46,7 @@ namespace DiscordBot.Commands
                 .WithEmbed(embed)
                 .AddComponents(new DiscordLinkButtonComponent[]
                 {
-                    new DiscordLinkButtonComponent("http://bit.ly/SenorStuf", "Invite Me!"),
+                    new DiscordLinkButtonComponent("http://bit.ly/SeñorStuf", "Invite Me!"),
                     new DiscordLinkButtonComponent("http://bit.ly/StufSupport", "Support")
                 }));
         }
@@ -65,6 +68,100 @@ namespace DiscordBot.Commands
             embed.AddField("WS Latency", "```ini\n[ " + ctx.Client.Ping + "ms ]\n```", true);
 
             await ctx.RespondAsync(embed);
+        }
+        
+        [Command("dictionary")]
+        [Description("Returns the definition of the word if valid")]
+        public async Task Dictionary(CommandContext ctx, [Description("American english word to define")]string word)
+        {
+            using (var w = new WebClient()) 
+            {
+                var json = string.Empty;
+                try 
+                {
+                    json = w.DownloadString("https://api.dictionaryapi.dev/api/v2/entries/en_US/" + word);
+                    Console.WriteLine(json);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                var wordDefinition = JsonConvert.DeserializeObject<Definition>(json);
+                Console.WriteLine(wordDefinition);
+
+                var phonetics = new List<string>();
+                foreach (var phonetic in wordDefinition.Phonetics)
+                {
+                    phonetics.Add(phonetic.Text);
+                }
+                var wordEmbed = Bot.CreateEmbed(ctx)
+                    .WithTitle(wordDefinition.Word)
+                    .WithUrl("https://www.lexico.com/en/definition/" + wordDefinition.Word)
+                    .AddField("Phonetics", "`" + string.Join("`, `", phonetics) + "`");
+
+                await ctx.RespondAsync(wordEmbed);
+                
+
+                var meaningEmbeds = new List<DiscordEmbedBuilder>();
+
+                TextInfo textInfo = new CultureInfo("en-US",false).TextInfo;
+                foreach (var meaning in wordDefinition.Meanings)
+                {
+                    var newMeaning = new DiscordEmbedBuilder()
+                        .WithFooter("", "")
+                        .WithTitle(textInfo.ToTitleCase(meaning.PartOfSpeech));
+                    
+                    foreach (var definition in meaning.Definitions)
+                    {
+                        newMeaning.AddField(definition.DefinitionDefinition, "*" + definition.Example + "*");
+                        newMeaning.AddField("Synonyms", "`" + string.Join("`, `", definition.Synonyms) + "`");
+                    }
+                    
+                    await ctx.Channel.SendMessageAsync(newMeaning);
+                }
+            }
+        }
+
+        public partial class Definition
+        {
+            [JsonProperty("word")]
+            public string Word { get; set; }
+
+            [JsonProperty("phonetics")]
+            public Phonetic[] Phonetics { get; set; }
+
+            [JsonProperty("meanings")]
+            public Meaning[] Meanings { get; set; }
+        }
+
+        public partial class Meaning
+        {
+            [JsonProperty("partOfSpeech")]
+            public string PartOfSpeech { get; set; }
+
+            [JsonProperty("definitions")]
+            public Definition[] Definitions { get; set; }
+        }
+
+        public partial class Definition
+        {
+            [JsonProperty("definition")]
+            public string DefinitionDefinition { get; set; }
+
+            [JsonProperty("synonyms")]
+            public string[] Synonyms { get; set; }
+
+            [JsonProperty("example")]
+            public string Example { get; set; }
+        }
+
+        public partial class Phonetic
+        {
+            [JsonProperty("text")]
+            public string Text { get; set; }
+
+            [JsonProperty("audio")]
+            public Uri Audio { get; set; }
         }
     }
 }

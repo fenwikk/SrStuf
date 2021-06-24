@@ -44,7 +44,7 @@ namespace DiscordBot.Commands.SlashCommands
                 .WithEmbed(embed)
                 .AddComponents(new DiscordLinkButtonComponent[]
                 {
-                    new DiscordLinkButtonComponent("http://bit.ly/SenorStuf", "Invite Me!"),
+                    new DiscordLinkButtonComponent("http://bit.ly/SeñorStuf", "Invite Me!"),
                     new DiscordLinkButtonComponent("http://bit.ly/StufSupport", "Support")
                 })));
         }
