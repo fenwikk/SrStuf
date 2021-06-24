@@ -242,13 +242,13 @@ namespace DiscordBot.Commands.SlashCommands
             }
         }
 
-        [Command("tiky")]
+        [SlashCommand("tiky", "Tiky!")]
         public async Task Tiky(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(":cookie:"));
         } 
 
-        [Command("fbi")]
+        [SlashCommand("fbi", "A message to the FBI agent in this server")]
         public async Task FBI(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("​To whatever FBI agent is in this discord, I do not affiliate with these people and myself, and have absolutely no relation with this server whatsoever. I do not condone anything that is posted here, by people or by me.\n\nIn case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it, I do not know how got here, probably added by a third party, I do not support any actions by members of this group"));
