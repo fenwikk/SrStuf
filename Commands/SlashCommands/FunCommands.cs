@@ -245,6 +245,7 @@ namespace DiscordBot.Commands.SlashCommands
         [SlashCommand("HaveIBeenPwned", "Have You Been Pwned?")]
         public async Task Pwned(InteractionContext ctx, string password)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var pwned = new HaveIBeenPwned.Password.HaveIBeenPwned();
             var timesPswrdPwned = pwned.GetNumberOfTimesPasswordPwned(password);
 
@@ -260,7 +261,7 @@ namespace DiscordBot.Commands.SlashCommands
                     .WithColor(DiscordColor.IndianRed);
             }
 
-            await ctx.RespondAsync(embed);
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
 
         [SlashCommand("tiky", "Tiky!")]
