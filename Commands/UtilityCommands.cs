@@ -1,19 +1,14 @@
 using System;
-using System.Net;
 using Xunit;
-using FluentAssertions;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using System.Globalization;
 
-using HaveIBeenPwned.Password;
 using OxfordDictionariesAPI;
 using OxfordDictionariesAPI.Models;
 
