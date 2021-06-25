@@ -11,5 +11,6 @@
     <PackageReference Include="DSharpPlus.Rest" Version="4.0.1" />
     <PackageReference Include="IDoEverything.DSharpPlus.SlashCommands" Version="1.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Wndrr.HaveIBeenPwned.Password" Version="1.1.0" />
   </ItemGroup>
 </Project>

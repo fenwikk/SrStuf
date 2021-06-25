@@ -126,7 +126,7 @@ namespace DiscordBot.Commands.SlashCommands
                     .AddEmbed(new DiscordEmbedBuilder()
                         .WithTitle("Challenge Declined")
                         .WithThumbnail(opponent.AvatarUrl)
-                        .WithColor(DiscordColor.Red)));
+                        .WithColor(DiscordColor.IndianRed)));
                 
                 ctx.Client.ComponentInteractionCreated -= ButtonPressed;
             }
@@ -240,6 +240,27 @@ namespace DiscordBot.Commands.SlashCommands
                         CreateTile(playfield[2, 2], "9")
                     });
             }
+        }
+
+        [SlashCommand("HaveIBeenPwned", "Have You Been Pwned?")]
+        public async Task Pwned(InteractionContext ctx, string password)
+        {
+            var pwned = new HaveIBeenPwned.Password.HaveIBeenPwned();
+            var timesPswrdPwned = pwned.GetNumberOfTimesPasswordPwned(password);
+
+            var embed = new DiscordEmbedBuilder().WithTitle("Have I Been Pwned?");
+            if (timesPswrdPwned == 0)
+            {
+                embed.WithDescription("No, your password wasn't found on HaveIBeenPwned.com")
+                    .WithColor(DiscordColor.SapGreen);
+            }
+            else
+            {
+                embed.WithDescription($"Yes, your password has been pwned **{timesPswrdPwned}** times!")
+                    .WithColor(DiscordColor.IndianRed);
+            }
+
+            await ctx.RespondAsync(embed);
         }
 
         [SlashCommand("tiky", "Tiky!")]

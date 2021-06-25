@@ -10,6 +10,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System.Globalization;
 
+using HaveIBeenPwned.Password;
+
 namespace DiscordBot.Commands
 {
     public class UtilityCommands : BaseCommandModule
@@ -66,6 +68,29 @@ namespace DiscordBot.Commands
             embed.Title = "Pong!";
             embed.AddField("Latency", "```ini\n[ " + latency + "ms ]\n```", true);
             embed.AddField("WS Latency", "```ini\n[ " + ctx.Client.Ping + "ms ]\n```", true);
+
+            await ctx.RespondAsync(embed);
+        }
+
+        [Command("haveibeenpwned")]
+        [Description("Have you been Pwned?")]
+        [Aliases("pwned")]
+        public async Task Pwned(CommandContext ctx, string password)
+        {
+            var pwned = new HaveIBeenPwned.Password.HaveIBeenPwned();
+            var timesPswrdPwned = pwned.GetNumberOfTimesPasswordPwned(password);
+
+            var embed = Bot.CreateEmbed(ctx).WithTitle("Have I Been Pwned?");
+            if (timesPswrdPwned == 0)
+            {
+                embed.WithDescription("No, your password wasn't found on HaveIBeenPwned.com")
+                    .WithColor(DiscordColor.SapGreen);
+            }
+            else
+            {
+                embed.WithDescription($"Yes, your password has been pwned **{timesPswrdPwned}** times!")
+                    .WithColor(DiscordColor.IndianRed);
+            }
 
             await ctx.RespondAsync(embed);
         }

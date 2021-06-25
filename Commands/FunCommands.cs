@@ -95,7 +95,7 @@ namespace DiscordBot.Commands
                     await ctx.RespondAsync(Bot.CreateEmbed(ctx)
                         .WithTitle("Request Timeout")
                         .WithThumbnail(opponent.AvatarUrl)
-                        .WithColor(DiscordColor.Red));
+                        .WithColor(DiscordColor.IndianRed));
                     
                     ctx.Client.ComponentInteractionCreated -= ButtonPressed;
                     return;
