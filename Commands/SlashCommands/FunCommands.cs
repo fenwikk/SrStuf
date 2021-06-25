@@ -242,28 +242,6 @@ namespace DiscordBot.Commands.SlashCommands
             }
         }
 
-        [SlashCommand("HaveIBeenPwned", "Have You Been Pwned?")]
-        public async Task Pwned(InteractionContext ctx, [Option("Password", "Password to check")]string password)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            var pwned = new HaveIBeenPwned.Password.HaveIBeenPwned();
-            var timesPswrdPwned = pwned.GetNumberOfTimesPasswordPwned(password);
-
-            var embed = new DiscordEmbedBuilder().WithTitle("Have I Been Pwned?");
-            if (timesPswrdPwned == 0)
-            {
-                embed.WithDescription("No, your password wasn't found on HaveIBeenPwned.com")
-                    .WithColor(DiscordColor.SapGreen);
-            }
-            else
-            {
-                embed.WithDescription($"Yes, your password has been pwned **{timesPswrdPwned}** times!")
-                    .WithColor(DiscordColor.IndianRed);
-            }
-
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-        }
-
         [SlashCommand("tiky", "Tiky!")]
         public async Task Tiky(InteractionContext ctx)
         {
