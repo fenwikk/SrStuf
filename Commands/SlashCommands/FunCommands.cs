@@ -243,7 +243,7 @@ namespace DiscordBot.Commands.SlashCommands
         }
 
         [SlashCommand("HaveIBeenPwned", "Have You Been Pwned?")]
-        public async Task Pwned(InteractionContext ctx, string password)
+        public async Task Pwned(InteractionContext ctx, [Option("Password", "Password to check")]string password)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             var pwned = new HaveIBeenPwned.Password.HaveIBeenPwned();
