@@ -11,6 +11,7 @@ using DSharpPlus.CommandsNext.Attributes;
 
 using OxfordDictionariesAPI;
 using OxfordDictionariesAPI.Models;
+using Newtonsoft.Json;
 
 namespace DiscordBot.Commands
 {
@@ -124,8 +125,15 @@ namespace DiscordBot.Commands
                 definitionEmbed.AddField(entry.LexicalCategory, string.Join("\n\n", senses));
             }
             await ctx.RespondAsync(definitionEmbed);
+        }
 
-
+        [Command("embed")]
+        [Description("Creates an embed")]
+        public async Task DiscordEmbed(CommandContext context, string embedJson)
+        {
+            await context.Message.DeleteAsync();
+            var embed = JsonConvert.DeserializeObject<DiscordEmbed>(embedJson);
+            await context.Channel.SendMessageAsync(embed);
         }
     }
 }
