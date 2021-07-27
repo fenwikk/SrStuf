@@ -1,7 +1,7 @@
 {
     "Title": "School Hours Discord Rules",
     "Url": null,
-    "Discription": "This community is meant to be a chill place for people to connect and discuss all things school or gaming related. While this isn’t a strict server, it’s meant to be a safe space. If your intents are contrary to this vision, please find some other outlet. We take the rules very seriously and temporary and/or permanent bans for first offenses will not be unusual. Please don’t break the rules.\nThe rules below are guidelines only and are not all inclusive. Please use common sense, stay safe, and have fun!",
+    "Description": "This community is meant to be a chill place for people to connect and discuss all things school or gaming related. While this isn’t a strict server, it’s meant to be a safe space. If your intents are contrary to this vision, please find some other outlet. We take the rules very seriously and temporary and/or permanent bans for first offenses will not be unusual. Please don’t break the rules.\nThe rules below are guidelines only and are not all inclusive. Please use common sense, stay safe, and have fun!",
     "Color": "#2b1435",
     "Image": "https://cdn.discordapp.com/embed/avatars/0.png",
     "Author": 
@@ -14,6 +14,12 @@
     {
         "text": "Made by Tarsier#6520",
         "iconUri": "https://d.lu.je/avatar/393368613652004877"
+    },
+    "Thumbnail":
+    {
+        "uri": "https://cdn.discordapp.com/embed/avatars/0.png",
+        "width": 0,
+        "height": 0
     },
     "Fields": 
     [

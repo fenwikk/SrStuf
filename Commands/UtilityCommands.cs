@@ -22,7 +22,7 @@ namespace DiscordBot.Commands
         [Aliases("i")]
         public async Task Info(CommandContext ctx)
         {
-            var author = await ctx.Client.GetUserAsync(Bot.Config.AuthorId);
+            var author = await ctx.Client.GetUserAsync(Bot.Config.AuthorId);  
 
             var embed = Bot.CreateEmbed(ctx)
                 .WithFooter("Made by " + author.Username + "#" + author.Discriminator, author.AvatarUrl)
@@ -125,69 +125,6 @@ namespace DiscordBot.Commands
                 definitionEmbed.AddField(entry.LexicalCategory, string.Join("\n\n", senses));
             }
             await ctx.RespondAsync(definitionEmbed);
-        }
-
-        [Command("embed")]
-        [Description("Creates an embed")]
-        public async Task DiscordEmbed(CommandContext context, [Description("The Json string to convert into an Embed")] string embedJson)
-        {
-            await context.Message.DeleteAsync();
-            var embed = JsonConvert.DeserializeObject<SimpleEmbed>(embedJson);
-
-            var embedBuilder = new DiscordEmbedBuilder()
-                .WithTitle(embed.Title)
-                .WithUrl(embed.Url)
-                .WithDescription(embed.Discription)
-                .WithColor(new DiscordColor(embed.Color))
-                .WithImageUrl(embed.Image)
-                .WithAuthor(embed.Author.Name, embed.Author.Url, embed.Author.IconUri)
-                .WithFooter(embed.Footer.Text, embed.Footer.IconUri);
-
-            foreach (var field in embed.Fields)
-            {
-                embedBuilder.AddField(field.Name, field.Value, field.Inline);
-            }
-
-            await context.Channel.SendMessageAsync(embedBuilder);
-        }
-
-        public class SimpleEmbed
-        {
-            public string Title;
-            public string Url;
-            public string Discription;
-            public string Color;
-            public string Image;
-            public EmbedAuthor Author;
-            public EmbedFooter Footer;
-            public List<EmbedField> Fields;
-
-            public class EmbedAuthor
-            {
-                public string Name;
-                public string Url;
-                public string IconUri;
-            }
-
-            public class EmbedFooter
-            {
-                public string Text;
-                public string IconUri;
-            }
-
-            public class EmbedThumbnail
-            {
-                public string Uri;
-                public int Width;
-                public int Height; 
-            }
-
-            public class EmbedField
-            {
-                public string Name;
-                public string Value;
-                public bool Inline;
-            }
         }
     }
 }

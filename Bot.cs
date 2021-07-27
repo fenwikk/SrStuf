@@ -77,11 +77,6 @@ namespace DiscordBot
                 EnableDms = false
             };
 
-            var slashConfig = new SlashCommandsConfiguration
-            {
-
-            };
-
             var interactivityConfig = new InteractivityConfiguration
             {
                 Timeout = Bot.Config.Timeout
@@ -91,7 +86,6 @@ namespace DiscordBot
             Client.Ready += OnClientReady;
             
             Commands = Client.UseCommandsNext(commandsConfig);
-            Slash = Client.UseSlashCommands(slashConfig);
             Client.UseInteractivity(interactivityConfig);
         }
 
@@ -99,6 +93,7 @@ namespace DiscordBot
         {
             Commands.RegisterCommands<Commands.UtilityCommands>();
             Commands.RegisterCommands<Commands.FunCommands>();
+            Commands.RegisterCommands<Commands.EmbedCommands>();
         }
         public static Task OnClientReady(DiscordClient client, ReadyEventArgs e)
         {
